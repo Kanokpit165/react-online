@@ -1,4 +1,5 @@
 import React from 'react'
+import { logo, title } from '../styles/style'
 
 const Logo = () => {
 
@@ -10,7 +11,7 @@ const Logo = () => {
     return (
         <div>
             {/*<img src= {LogoImage} width="100" alt="logo" /> //สำหรับเรียกใช้รูปบนเครื่อง */}
-            <img src={logoImage.url} width="100" alt="logo"/>
+            <img stlye ={logo} src={logoImage.url} width="100" alt="logo"/>
         </div>
     )
 }
