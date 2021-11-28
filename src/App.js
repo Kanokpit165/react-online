@@ -1,15 +1,16 @@
-import Header from './components/Header';
 import Footer from './components/Footer';
-import Logo from './components/Logo';
-function App() {
-  return (
-    <>
-      <Logo />
-      <Header />
-      <Footer title="TNI" website="www.google.com" address="Bangkok" 
-      postcode={10220} isOpen></Footer>
-    </>
-  );
-}
+ import Header from './components/Header';
+ import Logo from './components/Logo';
+ import './App.css';
 
-export default App;
+ function App() {
+   return (
+    <div className = "logo">
+    <Logo/>
+    <Header/>
+    <Footer title = {"TNI"} website = {"www.google.com"} address = {"Bangkok"} postcode = {"11000"} isOpen></Footer>
+    <Logo/>
+    </div>
+   );
+ }
+ export default App;

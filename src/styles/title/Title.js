@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+/*import styled, { css } from 'styled-components'
 import { Title } from '../style'
 
 const Button = styled.button`
@@ -17,4 +17,14 @@ const Button = styled.button`
     `};
 `
 
-export default Title
+export default Title*/
+
+import styled from "styled-components";
+
+ const Title = styled.h1`
+ font-size: 1.5em;
+ text-align: center;
+ color: palevioletred;
+ `;
+
+ export default Title
