@@ -1,85 +1,94 @@
-import React, { useState, useEffect } from 'react'
-import { Table, Image, Badge, Spinner, Button } from 'react-bootstrap'
-import { FiEdit3,FiDelete } from 'react-icons/fi'
+import React from 'react'
+import {Table, Badge, Spinner, Button} from "react-bootstrap"
 import axios from 'axios'
-import { Link } from 'react-router-dom'
-
+import { BiEdit } from "react-icons/bi";
+import {Link, useHistory} from 'react-router-dom'
 const CategoryPage = () => {
-  const [category, setCategory] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  useEffect(async () => {
-    try {
-      setLoading(true)
-      const res = await axios.get('https://api.codingthailand.com/api/category')
-      setCategory(res.data)
-    } catch (error) {
-      setError(error.response.data.message)
-      console.error(error.response)
-    } finally {
-      setLoading(false)
+    const history = useHistory()
+    const [category, setCategory] = React.useState([])
+    const [loading, setLoading] = React.useState(false)
+    const [error, setError] = React.useState(null)
+    const getData = async() => {
+        try{
+            setLoading(true) //เริ่มหมุน
+            const resp = await axios.get('https://api.codingthailand.com/api/category')
+            //console.log(resp.data)
+            setCategory(resp.data)
+        } catch(error){
+            //console.log(error.response)
+            setError(error)
+        } finally {
+            setLoading(false)//หยุดหมุน
+        }
     }
-  }, [])
-
-  if (loading) {
+    React.useEffect(() => {
+        getData()
+    }, [])
+    if(loading === true){
+        return(
+            <div className="text-center mt-5">
+                <Spinner animation="border" variant="danger" />
+            </div>
+        )
+    }
+    if(error){
+        return(
+            <div className="text-center mt-5 text-danger">
+                <h4>Error for API ,Please try again</h4>
+                <p>{error.response.data.message}</p>
+            </div>
+        )
+    }
     return (
-      <div className="text-center mt-5">
-        <Spinner animation="border" variant="primary" />
-      </div>
-    )
-  }
-  if (error) {
-    return (
-      <div className="text-center mt-5 text-danger">
-        <h4>Error from API, please try again</h4>
-        <p>{error}</p>
-      </div>
-    )
-  }
-
-  return (
-    <div className="container">
-      <div className="row">
-        <div className="col-md-12 mt-4">
-          <h2>Category Page</h2>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Option</th>
-              </tr>
-            </thead>
-            <tbody>
-              {category.map((item, index) => {
-                return (
-                  <tr key={item.id}>
-                    <td>{item.id}</td>
-                    <td>{item.name}</td>
-                    <td>
-                      <Link to='#'>
-                        <Button variant="outline-info">
-                          Edit
-                          <FiEdit3 />
+        <div className="container">
+            <div className="row">
+                <div className="col-md-12 mt-2">
+                        <Button variant="success" className='mb-3' onClick={() => {history.push('/category/create')}}>
+                            + Add new Category
                         </Button>
-                      </Link>
-                      &nbsp;&nbsp;
-                      <Link to='#'>
-                        <Button variant="outline-danger">
-                          Delete
-                          <FiDelete />
-                        </Button>
-                      </Link>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </Table>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export default CategoryPage
+                    <h2>Category</h2>
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                category.map((c,index) =>{
+                                    return (
+                                        <tr key={c.id}>
+                                            <td>{c.id}</td>
+                                            <td>{c.name}</td>
+                                            <td>
+                                                <Button variant="outline-primary" onClick={() => {history.push('/category/edit/'+ c.id )}}>Edits<BiEdit/></Button>
+                                                <Button variant="outline-danger ml-3" onClick={ async () => {
+                                                    const isConfirm = window.confirm('Confirm to delete >> ' + c.name + '?')
+                                                    if(isConfirm === true){
+                                                        try{
+                                                            const apiURL = 'https://api.codingthailand.com/api/category/'
+                                                            const resp = await axios.delete(apiURL+c.id)
+                                                            alert(resp.data.message)
+                                                            history.go(0)
+                                                        }
+                                                        catch(error){
+                                                            setError(error)
+                                                        }
+                                                    }
+                                                  }}>Delete<BiEdit/></Button>
+                                                  </td>
+                                              </tr>
+                                          )
+                                      })
+                                  }
+                              </tbody>
+                          </Table>
+                      </div>
+                  </div>
+              </div>
+          );
+          
+      }
+      export default CategoryPage
