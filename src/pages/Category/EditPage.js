@@ -2,22 +2,27 @@ import React from 'react'
 import {Form, Button} from "react-bootstrap"
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from "yup";
-import axios from 'axios';
-import {useParams ,useHistory} from 'react-router-dom'
-const schema = yup.object({
+ import * as yup from "yup";
+ import axios from 'axios';
+ import {useParams ,useHistory} from 'react-router-dom'
+ import { useToasts } from 'react-toast-notifications';
+
+
+ const schema = yup.object({
     name: yup.string().required('Category news cannot be null'),
   }).required();
 const EditPage = () => {
     const [error, setError] = React.useState(null)
-    const { id } = useParams()
+
+     const { id } = useParams()
+
+     const {addToast } = useToasts()
 
      const history = useHistory()
 
      const { register, handleSubmit, formState:{ errors }, setValue } = useForm({
         resolver: yupResolver(schema)
       });
-
     const onSubmit = async (data) => {
         console.log(data)
         try{
@@ -25,29 +30,26 @@ const EditPage = () => {
             const resp = await axios.put(apiURL,
                 {
                     id:id,
-                    name: data.name
-                }
-            )
-            alert('updateเสร็จสิ้น')
-            history.goBack()
-        }
-        catch(error){
+                     name: data.name
+                 }
+             )
+             //alert('updateเสร็จสิ้น')
+             addToast('updateเสร็จสิ้น',{appearance:'success', autoDismiss:true})
+             history.goBack()
+         }
+         catch(error){
             setError(error)
         }
     }
-
     React.useEffect(() => {
-       getData(id);
-   },[id])
-
+        getData(id);
+    },[id])
     const getData = async (id) => {
         const resp = await axios.get('https://api.codingthailand.com/api/category/' + id);
-         //console.log(resp.data)
-         setValue('name',resp.data.name)
-     };
-
-
-     if(error){
+        //console.log(resp.data)
+        setValue('name',resp.data.name)
+    };
+    if(error){
         return(
             <div className="text-center mt-5 text-danger">
                 <h4>Error from API, please try again</h4>
@@ -71,13 +73,12 @@ const EditPage = () => {
                                     </Form.Control.Feedback>
                                 )
                             }
-                         </Form.Group>
-
-                         <Button variant="primary" type="submit">
-                         Update
-                         </Button>
-                     </Form>
-                 </div>
+                        </Form.Group>
+                        <Button variant="primary" type="submit">
+                            Update
+                        </Button>
+                    </Form>
+                </div>
             </div>
         </div>
     )

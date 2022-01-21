@@ -1,12 +1,21 @@
 import React from 'react'
 import {Table, Badge, Spinner, Button} from "react-bootstrap"
-import axios from 'axios'
-import { BiEdit } from "react-icons/bi";
-import {Link, useHistory} from 'react-router-dom'
-const CategoryPage = () => {
-    const history = useHistory()
-    const [category, setCategory] = React.useState([])
-    const [loading, setLoading] = React.useState(false)
+ import axios from 'axios'
+ import { BiEdit } from "react-icons/bi";
+ import {Link, useHistory} from 'react-router-dom'
+ import { useToasts } from 'react-toast-notifications';
+
+
+
+ const CategoryPage = () => {
+
+     const history = useHistory()
+
+     const {addToast } = useToasts()
+
+     const [category, setCategory] = React.useState([])
+
+     const [loading, setLoading] = React.useState(false)
     const [error, setError] = React.useState(null)
     const getData = async() => {
         try{
@@ -67,28 +76,30 @@ const CategoryPage = () => {
                                                 <Button variant="outline-danger ml-3" onClick={ async () => {
                                                     const isConfirm = window.confirm('Confirm to delete >> ' + c.name + '?')
                                                     if(isConfirm === true){
-                                                        try{
-                                                            const apiURL = 'https://api.codingthailand.com/api/category/'
-                                                            const resp = await axios.delete(apiURL+c.id)
-                                                            alert(resp.data.message)
-                                                            history.go(0)
-                                                        }
-                                                        catch(error){
-                                                            setError(error)
-                                                        }
-                                                    }
-                                                  }}>Delete<BiEdit/></Button>
-                                                  </td>
-                                              </tr>
-                                          )
-                                      })
-                                  }
-                              </tbody>
-                          </Table>
-                      </div>
-                  </div>
-              </div>
-          );
-          
-      }
-      export default CategoryPage
+                                                         try{
+                                                             const apiURL = 'https://api.codingthailand.com/api/category/'
+                                                             const resp = await axios.delete(apiURL+c.id)
+                                                                  //alert(resp.data.message)                                                            
+                                                                  addToast(resp.data.data.message , {appearance:'success'})
+                                                                  history.go(0)
+     
+                                                              }
+                                                              catch(error){
+                                                                  setError(error)
+                                                             }
+                                                         }
+                                                     }}>Delete<BiEdit/></Button>
+                                                 </td>
+                                             </tr>
+                                         )
+                                     })
+                                 }
+                             </tbody>
+                         </Table>
+                     </div>
+                 </div>
+             </div>
+         );
+         
+     }
+     export default CategoryPage     
