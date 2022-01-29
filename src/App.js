@@ -17,12 +17,14 @@ import CategoryPage from "./pages/CategoryPage";
 import CreatePage from "./pages/CreatePage";
 import EditPage from "./pages/EditPage";
 import UploadPage from "./pages/UploadPage";
-import { ToastProvider } from 'react-toast-notifications';
-import RegisterPage from "./pages/RegisterPage";
-import LoginPage from "./pages/LoginPage";
+ import { ToastProvider } from 'react-toast-notifications';
+ import RegisterPage from "./pages/RegisterPage";
+ import LoginPage from "./pages/LoginPage";
+ import MemberPage from "./pages/MemberPage";
+ import PrivateRoute from "./pages/guard/auth";
 
-function App() {
-  return (
+ function App() {
+   return (
     <ToastProvider placement="top-center">
       <Router>
         <NavBar/>
@@ -44,12 +46,14 @@ function App() {
                     <Route path={`${url}/create`}><CreatePage/></Route>
                     <Route path={`${url}/edit/:id`}><EditPage/></Route>
                   </>
-                ) }>
+                 ) }>
 
-                </Route>
-                <Route path='/register'><RegisterPage/></Route>
-          <Route path='/login'><LoginPage/></Route>
-        </Switch>
+                 </Route>
+           <PrivateRoute path='/member'><MemberPage/></PrivateRoute>
+
+           <Route path='/register'><RegisterPage/></Route>
+           <Route path='/login'><LoginPage/></Route>
+         </Switch>
         <Footer/>
       </Router>
     </ToastProvider>
